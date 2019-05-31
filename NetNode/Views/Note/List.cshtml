@@ -1,0 +1,46 @@
+﻿@model List<NetNode.Models.Note>
+@{
+    var pageindex = Convert.ToInt32(ViewBag.PageIndex);
+    var pagecount = Convert.ToInt32(ViewBag.PageCount);
+    var pagestart = pageindex - 2 > 0 ? pageindex - 2 : 1;
+    var pageend = pageindex + 2 >= pagecount ? pagecount : pagestart + 4;
+}
+<div class="container-fluid">
+    <div class="row"><a asp-action="Add">添加Note</a></div>
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <h3>@item.Title</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+                <img style="width:64px;height:64px;" src="@((!string.IsNullOrEmpty(item.Attachment))?item.Attachment:"file/default.png")" />
+            </div>
+            <div class="col-md-3">
+                <h5>类型：@item.Type.Name</h5>
+                <div class="tab-content" id="md_@item.Id">@item.Content</div>
+            </div>
+            <div class="col-md-2">
+                <a href="/Note/Update/@item.Id">编辑</a>
+                <a href="/Note/Update/@item.Id">查看</a>
+            </div>
+
+        </div>
+    }
+</div>
+<nav>
+    <ul class="pagination">
+        <li class="@(pageindex == 1? "disabled" : "")">
+            <a asp-action="List" asp-route-pageindex="@(pageindex==1?1:pageindex-1)">&laquo;</a>
+        </li>
+        @for (int i = pagestart; i <= pageend; i++)
+        {
+            <li @(pageindex == i ? "class=active" : "")>
+                <a asp-action="List" asp-route-pageindex="@i">@i</a>
+            </li>
+        }
+        <li class="@(pageindex == pagecount? "disabled" : "")">
+            <a asp-action="List" asp-route-pageindex="@(pageindex==pagecount?pagecount:pageindex+1)">&raquo;</a>
+        </li>
+    </ul>
+</nav>
